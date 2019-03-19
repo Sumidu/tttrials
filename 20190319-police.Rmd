@@ -1,0 +1,79 @@
+---
+title: "Tidy Tuesday Police"
+author: "André Calero Valdez"
+date: "19 3 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Data Loading
+
+```{r libraries-and-data}
+library(tidyverse)
+combined_data <- readr::read_csv("https://raw.githubusercontent.com/5harad/openpolicing/master/results/data_for_figures/combined_data.csv")
+
+```
+
+
+# Deskriptive Analyse
+
+```{r descriptives}
+
+combined_data %>%
+  group_by(driver_race) %>% 
+  summarize(stops = mean(stops_per_year, na.rm = T)) %>% 
+  ggplot() + 
+  aes(x=driver_race, y=stops, fill=driver_race) +
+  geom_bar(stat = "identity")
+
+combined_data %>%
+  group_by(driver_race) %>% 
+  summarize(searches = mean(search_rate, na.rm = T)) %>% 
+  ggplot() + 
+  aes(x=driver_race, y=searches, fill=driver_race) +
+  geom_bar(stat = "identity")
+
+combined_data %>%
+  group_by(driver_race) %>% 
+  summarize(consent_searches = mean(consent_search_rate, na.rm = T)) %>% 
+  ggplot() + 
+  aes(x=driver_race, y=consent_searches, fill=driver_race) +
+  geom_bar(stat = "identity")
+
+combined_data %>%
+  group_by(driver_race) %>% 
+  summarize(hits = mean(hit_rate, na.rm = T)) %>% 
+  ggplot() + 
+  aes(x=driver_race, y=hits, fill=driver_race) +
+  geom_bar(stat = "identity")
+
+combined_data %>%
+  group_by(driver_race) %>% 
+  summarize(citations = mean(citation_rate_speeding_stops, na.rm = T)) %>% 
+  ggplot() + 
+  aes(x=driver_race, y=citations, fill=driver_race) +
+  geom_bar(stat = "identity")
+
+combined_data %>%
+  group_by(driver_race) %>% 
+  summarize(arrests = mean(arrest_rate, na.rm = T)) %>% 
+  ggplot() + 
+  aes(x=driver_race, y=arrests, fill=driver_race) +
+  geom_bar(stat = "identity")
+
+
+```
+
+## By State
+```{r}
+combined_data %>% group_by(state, driver_race) %>% 
+  summarise(stops = sum(stops_per_year)) %>% 
+  ggplot() +
+  aes(x = driver_race, y = stops, fill = state) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~state, scales = "free_y")
+```
+

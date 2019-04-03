@@ -1,0 +1,63 @@
+---
+title: "2019-04-02_bike"
+author: "André Calero Valdez"
+date: "2 4 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+```
+
+
+```{r load_data}
+bike_traffic <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-02/bike_traffic.csv")
+names(bike_traffic)
+View(bike_traffic)
+
+#ausreißer ansehen
+bike_traffic %>% filter(bike_count > 4000)
+```
+
+
+```{r data_cleaning}
+
+bike_datum <- bike_traffic %>% 
+  mutate(zeitpunkt = mdy_hms(date)) %>% 
+  separate(date, c("datum", "uhrzeit", "apm"), sep = " ", extra = "merge") %>% 
+  unite(uhrzeit, c("apm", "uhrzeit")) %>% 
+  mutate(weekday = wday(zeitpunkt))
+  
+
+
+
+```
+
+
+```{r plots, fig.height=10, fig.width=7}
+
+bike_datum %>% 
+  group_by(datum, crossing) %>% 
+  summarise(b_count = sum(bike_count)) %>% 
+  filter(b_count < 4000) %>% 
+  ggplot() +
+  aes(x = crossing, y = b_count) +
+  geom_boxplot() +
+  coord_flip()
+
+
+bike_datum %>% 
+  filter(bike_count < 4000) %>% 
+  group_by(uhrzeit, weekday) %>% 
+  summarise(b_count = sum(bike_count)) %>% 
+  ggplot() +
+  aes(x = uhrzeit, y = b_count) +
+  geom_boxplot() +
+  coord_flip() +
+  facet_wrap(~weekday) +
+  labs(title="Bike Riders by hour", x="Hour", y="Count of bike riders", subtitle = "Plot of rider count per hour")
+
+```
+

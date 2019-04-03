@@ -1,0 +1,40 @@
+---
+title: "Datenanalyse-DEMO"
+author: "André Calero Valdez"
+date: "3.4.2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(knitr.table.format = "html")
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+```
+
+# Überschriften
+
+##  Überschrift drunter
+Text steht hier.
+
+```{r datenladen, message=FALSE, warning=FALSE, paged.print=TRUE}
+
+bike_traffic <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-02/bike_traffic.csv")
+
+```
+
+```{r}
+bike_traffic %>% 
+  head(50) %>% 
+  kable() %>%
+  kable_styling()
+
+
+bike_traffic %>% 
+  ggplot() +
+  aes(x = crossing, y = bike_count) +
+  geom_boxplot() +
+  coord_flip()
+```
+

@@ -1,0 +1,41 @@
+---
+title: "Grand Slam Tournaments"
+author: "André Calero Valdez"
+date: "11 4 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(skimr)
+```
+
+```{r}
+player_dob <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-09/player_dob.csv")
+
+grand_slams <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-09/grand_slams.csv")
+
+grand_slam_timeline <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-09/grand_slam_timeline.csv")
+```
+
+```{r wins}
+
+grand_slams %>% 
+  group_by(name, grand_slam) %>% 
+  tally() %>% 
+  mutate(totaln = sum(n)) %>% 
+  arrange(desc(totaln)) %>% 
+  head(20) %>% 
+  ggplot() +
+  aes(x = fct_reorder(name, n), y = n, fill = grand_slam) +
+  geom_col() +
+  coord_flip() +
+  labs(x= "Playername", y= "Win count", title="Grandslams won by player (1968-2019)")
+
+grand_slams %>% 
+  group_by(grand_slam) %>% 
+  tally()
+
+```
+
